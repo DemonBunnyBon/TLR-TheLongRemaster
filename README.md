@@ -31,7 +31,7 @@ There is many more to come, but the proccess is slow and tedious, so please be p
 
 # Installation:
 
-- Download the latest version of [Mod Settings](https://github.com/DigitalzombieTLD/ModSettings/releases), it is a soft requirement, currently the mod features debbuging options which can be helpful if there is a problem with the mod.
+- Download the latest version of [Mod Settings](https://github.com/DigitalzombieTLD/ModSettings/releases), it is a soft requirement, currently the mod features debugging options which can be helpful if there is a problem with the mod.
 - Download the latest .dll file, drop it in your mods folder.
 - Enjoy!
 
