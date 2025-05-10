@@ -17,7 +17,7 @@ Everything in the mod is hand-crafted from scratch, trying to stay as true as po
 
 **Currently, the mod is in very early stages of development, as I'm working on it alone it will take a long time to finish, if it ever even gets to that point.**
 
-## Features:
+### Features:
 
 The alpha version features a handful of remastered models and textures for props, including:
 
