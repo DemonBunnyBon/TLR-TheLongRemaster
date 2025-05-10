@@ -4,9 +4,7 @@
 
 TLR is a visual overhaul mod for The Long Dark.
 
-# Overview
-
-## General information:
+# Overview:
 
 The Long Dark has been around for a while, and has been updated countless times in the past years. Understandably, newer assets tend to be of higher quality, but a lot of the older graphical elements went neglected, never to be updated.
 
