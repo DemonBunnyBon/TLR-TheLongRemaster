@@ -12,7 +12,7 @@ The Long Dark has been around for a while, and has been updated countless times 
 This mod aims to revitalize many visual assets throughout the game, including: geometry, textures, and many other miscellaneous graphics, while staying true to the style of TLD.
 
 
-Everything in the mod is hand-crafted from scratch, trying to stay as true as possible to the source material while also giving all the assets more detail and making them superior quality, sometimes giving the designs a fresh new look that is akin to the newer visual assets in the game.
+Everything in the mod is hand-crafted from scratch, trying to stay as true as possible to the source material while also giving all the assets more detail and making them superior quality, sometimes giving the designs a fresh new look that is akin to the style of the newer visual assets in the game.
 
 
 **Currently, the mod is in very early stages of development, as I'm working on it alone it will take a long time to finish, if it ever even gets to that point.**
