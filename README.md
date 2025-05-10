@@ -37,5 +37,5 @@ There is many more to come, but the proccess is slow and tedious, so please be p
 - Download the latest .dll file, drop it in your mods folder.
 - Enjoy!
 
-> [!Notice]
+> [!NOTE]
 > This is an unofficial modification for The Long Dark and is not endorsed by or affiliated with Hinterland Studio.
