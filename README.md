@@ -37,5 +37,6 @@ There is many more to come, but the proccess is slow and tedious, so please be p
 
 
 # Final words:
-This is an unofficial modification for The Long Dark and is not endorsed by or affiliated with Hinterland Studio.
-Please don't go around pestering the developers about such visual changes, or bad-mouthing them about the assets present in the vanilla game.
+This is an unofficial modification for The Long Dark and is not endorsed by or affiliated with Hinterland Studio. This is not part of the official visual updates.
+
+Also, please don't go around pestering the developers about such visual changes, or bad-mouthing them about the assets present in the vanilla game!
