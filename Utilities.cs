@@ -10,9 +10,9 @@ namespace TheLongRemaster
     internal static class Utils
     {
 
-        public static bool IsScenePlayable(string scene)
+        public static bool IsMainScene(string scene)
         {
-            return !(string.IsNullOrEmpty(scene) || scene.Contains("MainMenu") || scene == "Boot" || scene == "Empty");
+            return !(string.IsNullOrEmpty(scene) || scene.Contains("MainMenu") || scene == "Boot" || scene == "Empty" || scene.Contains("_SANDBOX") || scene.Contains("_DLC01"));
         }
 
         public static bool CompareName(string name, string compare)
@@ -34,7 +34,7 @@ namespace TheLongRemaster
         public static Material MakeTLDMatWithTexture(string TLRTextureName)
         {
             Material mat = new(GearItem.LoadGearItemPrefab("GEAR_Stick").gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material);
-            mat.name=TLRTextureName+"_mat";
+            mat.name = TLRTextureName + "_mat";
             mat.mainTexture = TLRMelon.TLRBundle.LoadAsset<Texture2D>(TLRTextureName);
             return mat;
         }
@@ -61,7 +61,7 @@ namespace TheLongRemaster
         }
         public static void LogObjSwap(string obj)
         {
-            if(Settings.instance.DebugObjects)
+            if (Settings.instance.DebugObjects)
             {
                 MelonLogger.Msg("Swap object for remaster: " + obj);
             }
@@ -69,11 +69,20 @@ namespace TheLongRemaster
 
         public static void LogObjCount(GameObject[] list)
         {
-            if(Settings.instance.DebugObjects)
+            if (Settings.instance.DebugObjects)
             {
                 MelonLogger.Msg("Found objects in scene: " + list.Length);
             }
-            
+
+        }
+
+        public static MeshFilter[] GrabObjChildrenFilters(GameObject obj)
+        {
+            return obj.GetComponentsInChildren<MeshFilter>();
+        }
+        public static MeshRenderer[] GrabObjChildrenRenderers(GameObject obj)
+        {
+            return obj.GetComponentsInChildren<MeshRenderer>();
         }
     }
 

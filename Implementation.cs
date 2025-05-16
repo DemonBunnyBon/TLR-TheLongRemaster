@@ -40,6 +40,7 @@ namespace TheLongRemaster
             {
                 MelonLogger.Msg("Registered TLR commands.");
             }
+
         }
 
 
@@ -53,7 +54,7 @@ namespace TheLongRemaster
             }
 
 
-            if (Utils.IsScenePlayable(sceneName) && !done)
+            if (Utils.IsMainScene(sceneName) && !done)
 			{
                 ExecuteMeshSwap();
                 done = true;
@@ -81,63 +82,107 @@ namespace TheLongRemaster
         public static void ExecuteMeshSwap()
         {
             Material? mat;
+            MeshFilter[]? filters;
+            MeshRenderer[]? renderers;
 
             GameObject[] SceneObjects = GameManager.FindObjectsOfType<GameObject>();
             Utils.LogObjCount(SceneObjects);
+
+            // Metal Frame Bed
+
             foreach (GameObject obj in SceneObjects)
             {
-                if (Utils.CompareName(obj.name, "INTERACTIVE_TwinBedB")) // Metal Frame Bed
+                if (Utils.CompareName(obj.name, "INTERACTIVE_TwinBedB")) 
                 {
-                    Utils.LogObjSwap(obj.name);
-                    mat = Utils.MakeTLDMatWithTexture("T_MetalBedFrameTLR_D");
-                    obj.GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_MetalBedFrameSingleTLR");
-                    obj.GetComponent<MeshRenderer>().material = mat;
-                    MeshFilter[] filters = obj.GetComponentsInChildren<MeshFilter>();
-                    foreach(MeshFilter f in filters)
+                    if(obj.GetComponent<MeshFilter>() != null)
                     {
-                        if(f.gameObject.name.Contains("OBJ_MetalBedMatressSingle"))
+                        Utils.LogObjSwap(obj.name);
+                        mat = Utils.MakeTLDMatWithTexture("T_MetalBedFrameTLR_D");
+                        obj.GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_MetalBedFrameSingleTLR");
+                        obj.GetComponent<MeshRenderer>().material = mat;
+                        filters = obj.GetComponentsInChildren<MeshFilter>();
+                        foreach (MeshFilter f in filters)
                         {
-                            f.mesh = Utils.LoadTLRMesh("SM_MetalBedFrameMattressSingleTLR");
+                            if (f.gameObject.name.Contains("OBJ_MetalBedMatressSingle"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_MetalBedFrameMattressSingleTLR");
+                            }
+                        }
+                        renderers = obj.GetComponentsInChildren<MeshRenderer>();
+
+                        foreach (MeshRenderer r in renderers)
+                        {
+                            if (r.gameObject.name.Contains("OBJ_MetalBedMatressSingle"))
+                            {
+                                r.material = mat;
+                            }
                         }
                     }
-                    MeshRenderer[] renderers = obj.GetComponentsInChildren<MeshRenderer>();
+                }
 
+                //Blue Armchair
+
+                if (Utils.CompareName(obj.name, "Obj_ChairA_Prefab")) 
+                {
+                    Utils.LogObjSwap(obj.name);
+                    mat = Utils.MakeTLDMatWithTexture("T_ChairATLR_D");
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
                     foreach(MeshRenderer r in renderers)
                     {
-                        if (r.gameObject.name.Contains("OBJ_MetalBedMatressSingle"))
+                        if(r.gameObject.name.Contains("ChairA"))
                         {
                             r.material = mat;
                         }
                     }
-
-
-
+                    foreach(MeshFilter f in filters)
+                    {
+                        if(f.gameObject.name.Contains("ChairA"))
+                        {
+                            f.mesh = Utils.LoadTLRMesh("SM_ChairATLR");
+                        }
+                    }
                 }
-                if(Utils.CompareName(obj.name, "Obj_ChairA_Prefab")) //Blue Armchair
-                {
-                    Utils.LogObjSwap(obj.name);
-                    mat = Utils.MakeTLDMatWithTexture("T_ChairATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_ChairATLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                }
+
+
                 if(Utils.CompareName(obj.name,"MetalLockerC")) // Metal Locker Triple
                 {
                     Utils.LogObjSwap(obj.name);
                     if(obj.GetComponent<MeshRenderer>() != null) 
                     {
                         mat = Utils.MakeTLDMatWithTexture("T_LockersTLR_D");
+                        Material mat2 = Utils.MakeTLDMatWithTexture("T_LockersBTLR_D");
                         obj.GetComponent<MeshRenderer>().material = mat;
                         obj.GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerTripleTLR");
-                        Transform child = obj.transform.GetChild(0);
-                        child.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        child.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorATLR");
-                        child = obj.transform.GetChild(1);
-                        child.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        child.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorBTLR");
-                        child = obj.transform.GetChild(2);
-                        mat = Utils.MakeTLDMatWithTexture("T_LockersBTLR_D");
-                        child.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        child.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
+                        filters = Utils.GrabObjChildrenFilters(obj);
+                        renderers = Utils.GrabObjChildrenRenderers(obj);
+                        foreach(MeshFilter f in filters)
+                        {
+                            if (f.gameObject.name.Contains("DoorC1"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorATLR");
+                            }
+                            if (f.gameObject.name.Contains("DoorC2"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorBTLR");
+                            }
+                            if (f.gameObject.name.Contains("DoorC3"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
+                            }
+                        }
+                        foreach(MeshRenderer r in renderers)
+                        {
+
+                            if(r.gameObject.name.Contains("DoorC2"))
+                            {
+                                r.material = mat2;
+                            }
+                            else
+                            {
+                                r.material = mat;
+                            }
+                        }
                     }
                 }
                 if (Utils.CompareName(obj.name, "MetalLockerB")) // Metal Locker Double
@@ -146,84 +191,117 @@ namespace TheLongRemaster
                     if (obj.transform.childCount > 0)
                     {
                         mat = Utils.MakeTLDMatWithTexture("T_LockersTLR_D");
-                        obj.transform.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        obj.transform.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoubleTLR");
-
-
-                        Transform child = obj.transform.GetChild(2);
-                        child.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        child.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
-
-
-                         child = obj.transform.GetChild(3);
-                         mat = Utils.MakeTLDMatWithTexture("T_LockersBTLR_D");
-                         child.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                         child.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorBTLR");
+                        Material mat2 = Utils.MakeTLDMatWithTexture("T_LockersBTLR_D");
+                        filters = Utils.GrabObjChildrenFilters(obj);
+                        renderers = Utils.GrabObjChildrenRenderers(obj);
+                        foreach(MeshFilter f in filters)
+                        {
+                            if(f.gameObject.name.Contains("MetalLockerB"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoubleTLR");
+                            }
+                            if(f.gameObject.name.Contains("DoorB1"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorATLR");
+                            }
+                            if(f.gameObject.name.Contains("DoorB2"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
+                            }
+                        }
+                        foreach(MeshRenderer r in renderers)
+                        {
+                            if(r.gameObject.name.Contains("DoorB2"))
+                            {
+                                r.material = mat2;
+                            }
+                            else
+                            {
+                                r.material = mat;
+                            }
+                        }
 
 
                     }
                 }
-                if(Utils.CompareName(obj.name, "OBJ_MetalLockerA_Prefab"))  // Metal Locker (breakable)
-                {
-                    mat = Utils.MakeTLDMatWithTexture("T_LockersTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerSingleTLR");
-                }
                 if(Utils.CompareName(obj.name,"OBJ_MetalLockerDoorA1_Prefab") || Utils.CompareName(obj.name,"OBJ_MetalLockerDoorA_Prefab")) // Metal Locker Door (breakable)
                 {
+                    Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_LockersBTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerDoorBTLR");
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach (MeshFilter f in filters)
+                    {
+                        f.mesh = Utils.LoadTLRMesh("SM_LockerDoorATLR");
+                    }
+                    foreach (MeshRenderer r in renderers)
+                    {
+                        r.material = mat;
+                    }
                 }
-                if(Utils.CompareName(obj.name,"MetalLockerA")) // Metal Locker Single
+                if(Utils.CompareName(obj.name,"CONTAINER_MetalLockerA")) // Metal Locker Single
                 {
                     if(obj.transform.childCount > 1)
                     {
                         Utils.LogObjSwap(obj.name);
                         mat = Utils.MakeTLDMatWithTexture("T_LockersTLR_D");
-                        obj.transform.GetChild(0).GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_LockerSingleTLR");
-                        obj.transform.GetChild(0).GetComponent<MeshRenderer>().material = mat;
-                        MeshFilter[] childmeshes = obj.transform.GetComponentsInChildren<MeshFilter>();
-                        foreach(MeshFilter m in childmeshes) 
+                        filters = Utils.GrabObjChildrenFilters(obj);
+                        renderers = Utils.GrabObjChildrenRenderers(obj);
+                        foreach(MeshFilter f in filters) 
                         {
-                            if(m.gameObject.name.Contains("Door"))
+                            if(f.gameObject.name.Contains("Door"))
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerDoorCTLR");
+                            }
+                            if(f.gameObject.name.Contains("MetalLockerA"))
+                            {
+                                f.mesh = Utils.LoadTLRMesh("SM_LockerSingleTLR");
                             }
                         }
-                        MeshRenderer[] childrenderers = obj.transform.GetComponentsInChildren<MeshRenderer>();
-                        foreach(MeshRenderer m in  childrenderers)
+                        foreach(MeshRenderer r in renderers)
                         {
-                            if(m.gameObject.name.Contains("Door"))
-                            {
-                                m.material = mat;
-                            }
+                                r.material = mat;
                         }
                     }
                 }
-                if(Utils.CompareName(obj.name,"INTERACTIVE_BunkBed") && !obj.name.Contains("LOD")) // Bunk Bed Wooden
+                if (Utils.CompareName(obj.name, "OBJ_MetalLockerA_Prefab"))  // Metal Locker (breakable)
+                {
+                    Utils.LogObjSwap(obj.name);
+                    mat = Utils.MakeTLDMatWithTexture("T_LockersTLR_D");
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach (MeshFilter f in filters)
+                    {
+                        f.mesh = Utils.LoadTLRMesh("SM_LockerSingleTLR");
+                    }
+                    foreach (MeshRenderer r in renderers)
+                    {
+                        r.material = mat;
+                    }
+                }
+                if (Utils.CompareName(obj.name,"INTERACTIVE_BunkBed") && !obj.name.Contains("LOD")) // Bunk Bed Wooden
                 {
                     mat = Utils.MakeTLDMatWithTexture("T_BunkBedTLR_D");
-                    MeshFilter[] childmeshes = obj.transform.GetComponentsInChildren<MeshFilter>();
-                    MeshRenderer[] childrenderers = obj.transform.GetComponentsInChildren<MeshRenderer>();
-                    foreach (MeshFilter m in childmeshes)
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach (MeshFilter f in filters)
                     {
-                        if(m.gameObject.name.Contains("BedFrame"))
+                        if(f.gameObject.name.Contains("BedFrame"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_BunkBed_MattressTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_BunkBed_MattressTLR");
                         }
-                        if(m.gameObject.name.Contains("BedBedding"))
+                        if(f.gameObject.name.Contains("BedBedding"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_BunkBed_BeddingTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_BunkBed_BeddingTLR");
                         }
-                        if(m.gameObject.name.Contains("INTERACTIVE_BunkBed_LOD0"))
+                        if(f.gameObject.name.Contains("INTERACTIVE_BunkBed_LOD0"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_BunkBed_FrameTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_BunkBed_FrameTLR");
                         }
                     }
-                    foreach (MeshRenderer m in childrenderers)
+                    foreach (MeshRenderer r in renderers)
                     {
-                        m.material = mat;
+                        r.material = mat;
                     }
                 }
                 if(Utils.CompareName(obj.name,"CONTAINER_MetalFileCabinetA")) //Filing Cabinet
@@ -232,263 +310,280 @@ namespace TheLongRemaster
                     {
                         Utils.LogObjSwap(obj.name);
                         mat = Utils.MakeTLDMatWithTexture("T_FileCabinetATLR_D");
-                        MeshFilter[] childmeshes = obj.transform.GetComponentsInChildren<MeshFilter>();
-                        MeshRenderer[] childrenderers = obj.transform.GetComponentsInChildren<MeshRenderer>();
-                        foreach (MeshFilter m in childmeshes)
+                        filters = Utils.GrabObjChildrenFilters(obj);
+                        renderers = Utils.GrabObjChildrenRenderers(obj);
+                        foreach (MeshFilter f in filters)
                         {
-                            if (m.gameObject.name.Contains("DrawerA1"))
+                            if (f.gameObject.name.Contains("DrawerA1"))
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
                             }
-                            if (m.gameObject.name.Contains("DrawerA2"))
+                            if (f.gameObject.name.Contains("DrawerA2"))
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerBTLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerBTLR");
                             }
-                            if (m.gameObject.name.Contains("DrawerA3"))
+                            if (f.gameObject.name.Contains("DrawerA3"))
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerCTLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerCTLR");
                             }
-                            if (m.gameObject.name.Contains("DrawerA4")) 
+                            if (f.gameObject.name.Contains("DrawerA4")) 
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerDTLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerDTLR");
                             }
-                            if(m.gameObject.name.Contains("FileCabinetA"))
+                            if(f.gameObject.name.Contains("FileCabinetA"))
                             {
-                                m.mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
+                                f.mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
                             }
                         }
-                        foreach (MeshRenderer m in childrenderers)
+                        foreach (MeshRenderer r in renderers)
                         {
-                            m.material = mat;
+                            r.material = mat;
                         }
                     }
                 }
-                if (Utils.CompareName(obj.name, "OBJ_MetalFileCabinetB_Prefab") || Utils.CompareName(obj.name, "OBJ_MetaelCabinetA_Prefab")) //Broken cabinets
+                if (Utils.CompareName(obj.name, "OBJ_MetalFileCabinetB_Prefab") || Utils.CompareName(obj.name, "OBJ_MetalCabinetA_Prefab")) //Broken cabinets
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_FileCabinetATLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach(MeshFilter f in filters)
+                    {
+                        f.mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
+                    }
+                    foreach(MeshRenderer r in renderers)
+                    {
+                        r.material = mat;
+                    }
                 }
                 if (Utils.CompareName(obj.name, "OBJ_MetalFileCabinetDrawerA2_Prefab")) //Broken cabinet drawers
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_FileCabinetATLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach (MeshFilter f in filters)
+                    {
+                        f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
+                    }
+                    foreach (MeshRenderer r in renderers)
+                    {
+                        r.material = mat;
+                    }
                 }
                 if(Utils.CompareName(obj.name,"OBJ_MetalFileCabinet_Prefab")) // Broken cabinet (full)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_FileCabinetATLR_D");
-                    Transform child = obj.transform.GetChild(0);
-                    child.GetComponent<MeshRenderer>().material = mat;
-                    child.GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
-                    MeshFilter[] childmeshes = child.transform.GetComponentsInChildren<MeshFilter>();
-                    MeshRenderer[] childrenderers = child.transform.GetComponentsInChildren<MeshRenderer>();
-                    foreach(MeshFilter m in childmeshes)
+                    filters = Utils.GrabObjChildrenFilters(obj);
+                    renderers = Utils.GrabObjChildrenRenderers(obj);
+                    foreach (MeshFilter f in filters)
                     {
-                        if(m.gameObject.name.Contains("MetalFileCabinetDrawerA1"))
+                        if(f.gameObject.name.Contains("MetalFileCabinetDrawerA1"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerATLR");
                         }
-                        if (m.gameObject.name.Contains("MetalFileCabinetDrawerA2"))
+                        if (f.gameObject.name.Contains("MetalFileCabinetDrawerA2"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerBTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerBTLR");
                         }
-                        if (m.gameObject.name.Contains("MetalFileCabinetDrawerA3"))
+                        if (f.gameObject.name.Contains("MetalFileCabinetDrawerA3"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerCTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerCTLR");
                         }
-                        if (m.gameObject.name.Contains("MetalFileCabinetDrawerA4"))
+                        if (f.gameObject.name.Contains("MetalFileCabinetDrawerA4"))
                         {
-                            m.mesh = Utils.LoadTLRMesh("SM_MetalDrawerDTLR");
+                            f.mesh = Utils.LoadTLRMesh("SM_MetalDrawerDTLR");
+                        }
+                        if(f.gameObject.name.Contains("MetalFileCabinet_LOD0"))
+                        {
+                            f.mesh = Utils.LoadTLRMesh("SM_FileCabinetTLR");
                         }
                     }
-                    foreach (MeshRenderer m in childrenderers)
+                    foreach(MeshRenderer r in renderers)
                     {
-                        m.material = mat;
+                        r.material = mat;
                     }
                 }
 
                 //Dishes
 
-                if(Utils.CompareName(obj.name,"OBJ_CupA_Prefab"))
+                if(Utils.CompareName(obj.name,"OBJ_CupA_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDGLassMatWithTexture("T_CupA_GlassTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_GlassATLR");
                 }
-                if(Utils.CompareName(obj.name,"BowlC_Prefab"))
+                if(Utils.CompareName(obj.name,"BowlC_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishBowlCTLR");
                 }
-                if(Utils.CompareName(obj.name,"BowlB_Prefab"))
+                if(Utils.CompareName(obj.name, "BowlB_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishBowlBTLR");
                 }
-                if (Utils.CompareName(obj.name, "BowlBBroken_Prefab"))
+                if (Utils.CompareName(obj.name, "BowlBBroken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishBowlBBrokenTLR");
                 }
-                if (Utils.CompareName(obj.name, "BowlA_Prefab") || Utils.CompareName(obj.name,"BowlA1_Prefab"))
+                if (Utils.CompareName(obj.name, "BowlA_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null || Utils.CompareName(obj.name,"BowlA1_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishBowlATLR");
                 }
-                if(Utils.CompareName(obj.name,"BowlA2_Prefab"))
+                if(Utils.CompareName(obj.name,"BowlA2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishBowlBTLR");
                 }
-                if(Utils.CompareName(obj.name,"PlateA_Prefab") || Utils.CompareName(obj.name,"PlateA1_Prefab"))
+                if(Utils.CompareName(obj.name,"OBJ_DishPlateA_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null || Utils.CompareName(obj.name,"PlateA1_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateATLR");
                 }
-                if(Utils.CompareName(obj.name,"PlateB1_Prefab"))
+                if(Utils.CompareName(obj.name,"PlateB1_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB1TLR");
                 }
-                if (Utils.CompareName(obj.name, "PlateB2_Prefab"))
+                if (Utils.CompareName(obj.name, "PlateB2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB2TLR");
                 }
-                if (Utils.CompareName(obj.name, "PlateB3_Prefab"))
+                if (Utils.CompareName(obj.name, "PlateB3_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB3TLR");
                 }
-                if (Utils.CompareName(obj.name,"PlateABroken_Prefab") || Utils.CompareName(obj.name,"PlateA1Broken_Prefab"))
+                if (Utils.CompareName(obj.name,"PlateABroken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null || Utils.CompareName(obj.name, "PlateA1Broken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateABrokenTLR");
                 }
-                if(Utils.CompareName(obj.name, "PlateB1Broken_Prefab"))
+                if(Utils.CompareName(obj.name, "PlateB1Broken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB1BrokenTLR");
                 }
-                if(Utils.CompareName(obj.name, "PlateB2Broken_Prefab"))
+                if(Utils.CompareName(obj.name, "PlateB2Broken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB2BrokenTLR");
                 }
-                if (Utils.CompareName(obj.name, "PlateB3Broken_Prefab"))
+                if (Utils.CompareName(obj.name, "PlateB3Broken_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishPlateB3BrokenTLR");
                 }
-                if(Utils.CompareName(obj.name,"DishServeB1_Prefab"))
+                if(Utils.CompareName(obj.name,"DishServeB1_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                     obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishServeB1TLR");
                 }
-                if (Utils.CompareName(obj.name, "DishServeB2_Prefab"))
+                if (Utils.CompareName(obj.name, "DishServeB2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishServeB2TLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishServeB2TLR");
                 }
-                if (Utils.CompareName(obj.name, "DishServeB3_Prefab"))
+                if (Utils.CompareName(obj.name, "DishServeB3_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_DishesTLR_D");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishServeB3TLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_DishServeB3TLR");
+
                 }
 
                 // Pilow 1
 
-                if (Utils.CompareName(obj.name,"WhalingShipBedPillow_Prefab")) 
+                if (Utils.CompareName(obj.name,"WhalingShipBedPillow_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null) 
                 {
-                    if(obj.GetComponent<MeshRenderer>())
-                    {
                         Utils.LogObjSwap(obj.name);
                         mat = Utils.MakeTLDMatWithTexture("T_PillowCaseTLR_D");
                         obj.GetComponent<MeshRenderer>().material = mat;
                         obj.GetComponent<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_PillowTLROffset");
-                    }
                 }
 
                 // Curtains 1
 
-                if (Utils.CompareName(obj.name, "CurtainA2_Prefab"))
+                if (Utils.CompareName(obj.name, "CurtainA2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainATLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainATLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                 }
-                if (Utils.CompareName(obj.name,"CurtainB2_Prefab"))
+                if (Utils.CompareName(obj.name,"CurtainB2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainBTLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainBTLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                 }
-                if (Utils.CompareName(obj.name, "CurtainC2_Prefab"))
+                if (Utils.CompareName(obj.name, "CurtainC2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainCTLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainCTLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                 }
-                if (Utils.CompareName(obj.name, "CurtainD2_Prefab"))
+                if (Utils.CompareName(obj.name, "CurtainD2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainDTLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainDTLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                 }
-                if (Utils.CompareName(obj.name, "CurtainE2_Prefab"))
+                if (Utils.CompareName(obj.name, "CurtainE2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainETLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                        obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainETLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
                 }
-                if (Utils.CompareName(obj.name, "CurtainF2_Prefab"))
+                if (Utils.CompareName(obj.name, "CurtainF2_Prefab") && obj.GetComponentInChildren<MeshFilter>() != null)
                 {
                     Utils.LogObjSwap(obj.name);
                     mat = Utils.MakeTLDMatWithTexture("T_CurtainsATLR_D");
-                    obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainFTLR");
-                    obj.GetComponentInChildren<MeshRenderer>().material = mat;
+
+                      obj.GetComponentInChildren<MeshFilter>().mesh = Utils.LoadTLRMesh("SM_CurtainFTLR");
+                        obj.GetComponentInChildren<MeshRenderer>().material = mat;
+                    
                 }
                 // Metal Desk
                 if(Utils.CompareName(obj.name, "CONTAINER_MetalDesk"))
@@ -497,8 +592,8 @@ namespace TheLongRemaster
                     {
                         Utils.LogObjSwap(obj.name);
                         mat = Utils.MakeTLDMatWithTexture("T_MetalDeskTLR_D");
-                        MeshFilter[] filters = obj.GetComponentsInChildren<MeshFilter>();
-                        MeshRenderer[] renderers = obj.GetComponentsInChildren<MeshRenderer>();
+                        filters = Utils.GrabObjChildrenFilters(obj);
+                        renderers = Utils.GrabObjChildrenRenderers(obj);
                         foreach(MeshFilter f in filters)
                         {
                             if(f.gameObject.name.Contains("CONTAINER_MetalDesk"))
